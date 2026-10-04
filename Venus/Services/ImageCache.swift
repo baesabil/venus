@@ -6,13 +6,22 @@ final class ImageCache {
     static let shared = ImageCache()
     private let cache = NSCache<NSString, UIImage>()
 
-    /// Cover untuk kartu/grid. Kunci cache memakai `updatedAt`,
+    /// Cover untuk kartu/grid (kecil, 800px). Kunci cache memakai `updatedAt`,
     /// jadi kalau note diedit, cache otomatis dianggap baru.
     func coverImage(for note: Note) -> UIImage? {
-        let key = "cover-\(note.id.uuidString)-\(note.updatedAt.timeIntervalSince1970)" as NSString
+        cover(for: note, maxPixel: 800, prefix: "cover")
+    }
+
+    /// Cover untuk halaman detail (lebih tajam, 1300px, karena tampil selebar layar).
+    func detailCover(for note: Note) -> UIImage? {
+        cover(for: note, maxPixel: 1300, prefix: "detail")
+    }
+
+    private func cover(for note: Note, maxPixel: CGFloat, prefix: String) -> UIImage? {
+        let key = "\(prefix)-\(note.id.uuidString)-\(note.updatedAt.timeIntervalSince1970)" as NSString
         if let hit = cache.object(forKey: key) { return hit }
         guard let data = note.coverImageData,
-              let image = ImageProcessor.downsample(data: data, maxPixel: 800) else { return nil }
+              let image = ImageProcessor.downsample(data: data, maxPixel: maxPixel) else { return nil }
         cache.setObject(image, forKey: key)
         return image
     }

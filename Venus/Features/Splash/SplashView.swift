@@ -6,7 +6,7 @@ import SwiftUI
 struct SplashView: View {
     var body: some View {
         ZStack {
-            Theme.background.ignoresSafeArea()//ngatur warna background
+            Theme.background.ignoresSafeArea()
             VStack(spacing: 20) {
                 if UIImage(named: "SplashImage") != nil {
                     Image("SplashImage")

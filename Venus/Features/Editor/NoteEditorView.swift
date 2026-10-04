@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Halaman note (dipakai untuk note BARU dan untuk mengedit note lama).
-/// Tombol back otomatis menyimpan, seperti app Notes.
+/// Tombol back DAN tombol ceklis sama-sama menyimpan (tidak ada yang hilang).
 struct NoteEditorView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -39,6 +39,8 @@ struct NoteEditorView: View {
             HStack {
                 CircleIconButton(systemName: "chevron.left") { closeAndSave() }
                 Spacer()
+                // Ceklis = selesai menulis: simpan lalu tutup editor.
+                CircleIconButton(systemName: "checkmark", isDark: true) { closeAndSave() }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 6)
