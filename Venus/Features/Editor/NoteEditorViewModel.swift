@@ -2,13 +2,6 @@ import SwiftUI
 import SwiftData
 import PencilKit
 
-/// Perintah format dari toolbar ke blok teks yang sedang fokus.
-struct FormatCommand: Equatable {
-    enum Kind { case bold, italic }
-    let id = UUID()
-    let kind: Kind
-}
-
 /// "Otak" halaman editor. Menyimpan draft sementara selama kamu mengedit,
 /// lalu menulisnya ke `Note` (SwiftData) saat kamu menekan back.
 @MainActor
@@ -35,8 +28,9 @@ final class NoteEditorViewModel {
 
     // Koordinasi toolbar <-> blok
     var focusedBlockID: UUID?
-    var formatCommand: FormatCommand?
     var focusRequestID: UUID?
+    /// Kolom teks (UITextView) yang terakhir diketuk. Tidak perlu diamati SwiftUI.
+    @ObservationIgnored weak var activeTextView: UITextView?
 
     var hasCover: Bool { baseImage != nil || !layers.isEmpty || !drawing.strokes.isEmpty }
 
@@ -123,6 +117,18 @@ final class NoteEditorViewModel {
         if let file = blocks[index].imageFile { ImageStore.delete(file) }
         blocks.remove(at: index)
         if blocks.isEmpty || blocks.last?.kind != .text { blocks.append(.emptyText()) }
+    }
+
+    // MARK: - Format teks
+
+    func toggleBold()   { applyFormat(.traitBold) }
+    func toggleItalic() { applyFormat(.traitItalic) }
+
+    private func applyFormat(_ trait: UIFontDescriptor.SymbolicTraits) {
+        guard let textView = activeTextView else { return }
+        HapticsManager.shared.tick()
+        RichTextCodec.toggle(trait, in: textView)
+        if !textView.isFirstResponder { textView.becomeFirstResponder() }
     }
 
     // MARK: - Lagu

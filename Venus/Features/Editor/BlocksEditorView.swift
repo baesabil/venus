@@ -12,11 +12,19 @@ struct BlocksEditorView: View {
                 case .text:
                     TextBlockView(block: $block, vm: vm)
                 case .checklist, .bullet:
-                    ListItemBlockView(block: $block, vm: vm)
+                    ListItemBlockView(block: $block, vm: vm) { vm.removeBlock(block.id) }
+                        .contextMenu { deleteButton(for: block.id) }
                 case .photo:
                     PhotoBlockView(block: block) { vm.removeBlock(block.id) }
+                        .contextMenu { deleteButton(for: block.id) }
                 }
             }
+        }
+    }
+
+    private func deleteButton(for id: UUID) -> some View {
+        Button(role: .destructive) { vm.removeBlock(id) } label: {
+            Label("Delete", systemImage: "trash")
         }
     }
 }

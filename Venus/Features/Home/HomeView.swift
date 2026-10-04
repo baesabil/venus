@@ -61,38 +61,49 @@ struct HomeView: View {
         }
     }
 
-    /// Sapaan. Teksnya diatur di Design/AppCopy.swift. Tap untuk ganti nama.
+    /// Sapaan + naga. Teksnya diatur di Design/AppCopy.swift. Tap teks untuk ganti nama; tap naga untuk goyang.
     private var greeting: some View {
-        Button {
-            nameDraft = userName
-            showNameAlert = true
-        } label: {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(AppCopy.greeting(name: userName))
-                    .font(.system(size: 30, weight: .bold))
-                    .foregroundStyle(Theme.ink)
-                Text(AppCopy.greetingSubtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+        HStack(alignment: .top, spacing: 8) {
+            Button {
+                nameDraft = userName
+                showNameAlert = true
+            } label: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(AppCopy.greeting(name: userName))
+                        .font(.system(size: 30, weight: .bold))
+                        .foregroundStyle(Theme.ink)
+                        .multilineTextAlignment(.leading)
+                    Text(AppCopy.greetingSubtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
+                }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 24)
-            .padding(.top, 8)
+            .buttonStyle(.plain)
+
+            Spacer(minLength: 0)
+
+            MascotView(height: 104, restingAngle: 6)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 24)
+        .padding(.top, 4)
     }
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
-            RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous)
-                .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [8]))
-                .foregroundStyle(.secondary.opacity(0.5))
-                .frame(width: 260, height: 260)
-                .overlay {
-                    Image(systemName: "photo.on.rectangle.angled")
-                        .font(.system(size: 44))
-                        .foregroundStyle(.secondary)
-                }
+        VStack(spacing: 20) {
+            if UIImage(named: "DragonMascot") != nil {
+                MascotView(height: 240, restingAngle: -3)
+            } else {
+                RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [8]))
+                    .foregroundStyle(.secondary.opacity(0.5))
+                    .frame(width: 260, height: 260)
+                    .overlay {
+                        Image(systemName: "photo.on.rectangle.angled")
+                            .font(.system(size: 44))
+                            .foregroundStyle(.secondary)
+                    }
+            }
             Text(AppCopy.emptyHome)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

@@ -62,11 +62,14 @@ struct ArchiveView: View {
                 }
 
                 if displayedNotes.isEmpty {
-                    Text(emptyMessage)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 60)
+                    VStack(spacing: 14) {
+                        MascotView(height: 130, restingAngle: -3)
+                        Text(emptyMessage)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 40)
                 } else {
                     LazyVGrid(columns: columns, spacing: 16) {
                         ForEach(displayedNotes) { note in

@@ -2,7 +2,7 @@ import SwiftUI
 import PhotosUI
 
 /// Toolbar melayang di bawah (gaya referensi): tombol + membuka pilihan blok.
-/// Tombol B / I muncul hanya saat kamu sedang mengetik di blok teks.
+/// Tombol B / I selalu ada; berlaku untuk teks yang di-blok (atau teks yang akan diketik).
 /// Dipasang lewat safeAreaInset, jadi otomatis naik di atas keyboard.
 struct BlockToolbar: View {
     @Bindable var vm: NoteEditorViewModel
@@ -35,16 +35,14 @@ struct BlockToolbar: View {
                     .transition(.scale.combined(with: .opacity))
             }
 
-            if vm.focusedBlockID != nil {
-                Button { vm.formatCommand = FormatCommand(kind: .bold) } label: { icon("bold") }
-                    .buttonStyle(.plain)
-                Button { vm.formatCommand = FormatCommand(kind: .italic) } label: { icon("italic") }
-                    .buttonStyle(.plain)
-            }
+            // B / I bekerja pada kolom teks yang terakhir kamu ketuk.
+            Button { vm.toggleBold() } label: { icon("bold") }
+                .buttonStyle(.plain)
+            Button { vm.toggleItalic() } label: { icon("italic") }
+                .buttonStyle(.plain)
         }
         .padding(6)
         .background(Theme.paperSurface.opacity(0.85), in: Capsule())
-        .animation(.spring(response: 0.35, dampingFraction: 0.75), value: vm.focusedBlockID)
         .onChange(of: pickedItem) { _, item in
             guard let item else { return }
             Task {

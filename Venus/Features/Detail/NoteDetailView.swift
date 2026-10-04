@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Tampilan NOTE (mode baca): cover penuh di atas, lembar putih melengkung
-/// berisi tanggal, judul, isi; bar lagu menempel di bawah.
+/// berisi tanggal, judul, lagu (kalau ada), lalu isi note.
 /// Tombol back (kiri) dari NavigationStack, jadi swipe-back juga jalan.
 /// Tombol pensil (kanan) membuka editor.
 struct NoteDetailView: View {
@@ -20,14 +20,6 @@ struct NoteDetailView: View {
         }
         .ignoresSafeArea(edges: .top)
         .background(Theme.paper.ignoresSafeArea())
-        .safeAreaInset(edge: .bottom) {
-            // Bar lagu HANYA muncul kalau note ini punya lagu.
-            if hasSong {
-                SongBar(note: note)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 8)
-            }
-        }
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -65,6 +57,11 @@ struct NoteDetailView: View {
                 Text(note.title)
                     .font(.system(size: 28, weight: .bold))
                     .foregroundStyle(Theme.ink)
+            }
+
+            // Lagu: tepat di bawah judul, hanya muncul kalau note ini punya lagu.
+            if hasSong {
+                SongBar(note: note)
             }
 
             DetailBlocksView(note: note)
